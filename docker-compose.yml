@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  payload:
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: always
+    ports:
+      - '3004:3004'
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    volumes:
+      - media_data:/app/media
+
+  postgres:
+    restart: always
+    image: postgres:16-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-payload}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-payload}
+
+volumes:
+  pgdata:
+  media_data:

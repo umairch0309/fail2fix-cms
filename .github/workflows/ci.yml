@@ -1,0 +1,25 @@
+name: CMS Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Deploy Services
+        run: |
+          echo "Building local Docker images..."
+          docker compose build
+
+          echo "Deploying new versions..."
+          docker compose up -d --remove-orphans
+
+          echo "Cleaning up old Docker images..."
+          docker image prune -f
