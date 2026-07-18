@@ -5,7 +5,12 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
   },
-  auth: true,
+  auth: {
+    cookies: {
+      sameSite: 'Lax',
+      secure: process.env.NODE_ENV === 'production',
+    },
+  },
   fields: [
     {
       name: 'name',

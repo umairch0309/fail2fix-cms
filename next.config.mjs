@@ -2,7 +2,7 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Do NOT set output: 'standalone' on Vercel — it breaks Payload admin SSR.
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
@@ -16,6 +16,14 @@ const nextConfig = {
     }
 
     return webpackConfig
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fail2fixcms.vercel.app',
+      },
+    ],
   },
 }
 

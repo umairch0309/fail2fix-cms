@@ -14,6 +14,10 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  serverURL:
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    process.env.PAYLOAD_PUBLIC_SERVER_URL ||
+    '',
   admin: {
     user: Users.slug,
     importMap: {
@@ -27,6 +31,7 @@ export default buildConfig({
     'https://failfix-animation.vercel.app',
     'https://fail2fix.vercel.app',
     'https://fail2fix-customer.vercel.app',
+    'https://fail2fixcms.vercel.app',
   ],
   collections: [Users, Media, Blogs],
   editor: lexicalEditor(),
@@ -37,6 +42,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      max: 10,
     },
     prodMigrations: migrations,
   }),
