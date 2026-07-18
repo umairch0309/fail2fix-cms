@@ -14,6 +14,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    // Vercel serverless FS is read-only; store file metadata only until S3/blob is wired.
+    disableLocalStorage: true,
     staticDir: path.resolve(process.cwd(), 'media'),
     mimeTypes: ['image/*'],
     filesRequiredOnCreate: false,

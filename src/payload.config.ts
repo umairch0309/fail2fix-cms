@@ -3,7 +3,6 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -36,17 +35,17 @@ export default buildConfig({
   ],
   collections: [Users, Media, Blogs],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: (process.env.PAYLOAD_SECRET || '').trim(),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: (process.env.DATABASE_URL || '').trim(),
       max: 10,
     },
     prodMigrations: migrations,
   }),
-  sharp,
+  // Omit sharp on Vercel — native binary often fails in serverless and crashes /admin.
   plugins: [],
 })

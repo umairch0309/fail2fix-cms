@@ -3,6 +3,7 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Do NOT set output: 'standalone' on Vercel — it breaks Payload admin SSR.
+  serverExternalPackages: ['sharp', 'graphql'],
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
