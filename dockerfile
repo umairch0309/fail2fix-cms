@@ -1,13 +1,12 @@
-# Dockerfile using Bun
-
-FROM oven/bun:alpine AS base
+# Base: real Node 22.23.4, with the Bun binary copied in for installs
+FROM node:22.23.4-alpine AS base
+RUN apk add --no-cache libstdc++ libgcc libc6-compat
+COPY --from=oven/bun:1-alpine /usr/local/bin/bun /usr/local/bin/bun
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-COPY package.json bun.lockb* ./
+COPY package.json bun.lockb* bun.lock* ./
 RUN bun install
 
 # Rebuild the source code only when needed
@@ -20,12 +19,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Production image (Node only, no Bun needed)
+FROM node:22.23.4-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3004
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -45,6 +46,4 @@ USER nextjs
 
 EXPOSE 3004
 
-ENV PORT=3004
-
-CMD HOSTNAME="0.0.0.0" bun server.js
+CMD ["node", "server.js"]
